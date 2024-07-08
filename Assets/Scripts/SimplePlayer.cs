@@ -15,6 +15,7 @@ public class SimplePlayer : MonoBehaviour
     float input_x;
     float input_y;
     public int forceConst = 50;
+    private bool isGrounded;
 
     private bool canJump;
     private Rigidbody selfRigidbody;
@@ -37,13 +38,22 @@ public class SimplePlayer : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
         }
-        if (Input.GetKeyUp(KeyCode.Space))
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //canJump = true;
+        //}
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            canJump = true;
+            if (isGrounded)
+            {
+                //jump
+            }
         }
+    
 
-    }
-    private void FixedUpdate()
+
+}
+private void FixedUpdate()
     {
         if (inputVector.magnitude >= 0.01f)
             velocityVector = transform.forward * speed * Time.fixedDeltaTime;
@@ -53,12 +63,13 @@ public class SimplePlayer : MonoBehaviour
         rb.velocity = new Vector3(velocityVector.x, rb.velocity.y, velocityVector.z);
       
         
-        if (canJump)
-            {
-                canJump = false;
-                selfRigidbody.AddForce(0, forceConst, 0, ForceMode.Impulse);
-            }
+        //if (canJump)
+            //{
+               // canJump = false;
+               // selfRigidbody.AddForce(0, forceConst, 0, ForceMode.Impulse);
+          //  }
         
     }
 }
+
 
