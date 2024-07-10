@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
@@ -15,14 +17,13 @@ public class SimplePlayer : MonoBehaviour
     float input_x;
     float input_y;
     public int forceConst = 50;
-    private bool isGrounded;
-
-    private bool canJump;
-    private Rigidbody selfRigidbody;
+    public float JumpForce =5;
+    public bool Isgrounded;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        selfRigidbody = GetComponent<Rigidbody>();
+        
     }
 
     
@@ -38,22 +39,34 @@ public class SimplePlayer : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
         }
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //canJump = true;
-        //}
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Isgrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            if (isGrounded)
-            {
-                //jump
-            }
+            Jump();
         }
-    
-
 
 }
-private void FixedUpdate()
+
+    private void Jump()
+    {
+  
+        rb.AddForce(Vector3.up*JumpForce,ForceMode.Impulse);
+        Isgrounded = false;  
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ground"))
+        {
+            Isgrounded = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ground"))
+        {
+            Isgrounded = false;
+        }
+    }
+    private void FixedUpdate()
     {
         if (inputVector.magnitude >= 0.01f)
             velocityVector = transform.forward * speed * Time.fixedDeltaTime;
@@ -63,11 +76,6 @@ private void FixedUpdate()
         rb.velocity = new Vector3(velocityVector.x, rb.velocity.y, velocityVector.z);
       
         
-        //if (canJump)
-            //{
-               // canJump = false;
-               // selfRigidbody.AddForce(0, forceConst, 0, ForceMode.Impulse);
-          //  }
         
     }
 }
